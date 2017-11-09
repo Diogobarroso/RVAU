@@ -32,7 +32,6 @@ public class PlayerBehaviour : MonoBehaviour, ITrackableEventHandler {
 	}
 	
 	void Update () {
-		
 	}
 
     void Fire()
@@ -43,6 +42,8 @@ public class PlayerBehaviour : MonoBehaviour, ITrackableEventHandler {
             {
                 bullets[i].transform.position = transform.position;
                 bullets[i].transform.localScale = new Vector3(0.0005f,0.0005f,0.0005f);
+                //bullets[i].transform.SetParent(GameObject.Find("Empty").transform);
+                //bullets[i].transform.rotation = Quaternion.identity;
                 bullets[i].SetActive(true);
                 break;
             }
@@ -57,5 +58,11 @@ public class PlayerBehaviour : MonoBehaviour, ITrackableEventHandler {
             InvokeRepeating("Fire", 1.0f, rateOfFire);
         else
             CancelInvoke();
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.transform.parent.gameObject.name.Contains("Bullet"))
+            Destroy(this);
     }
 }

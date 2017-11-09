@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class BulletBehaviour : MonoBehaviour {
-    float speed = 1f;
+    float speed = 0.5f;
     private void OnEnable()
     {
         Invoke("Destroy", 2.0f);
@@ -14,8 +14,16 @@ public class BulletBehaviour : MonoBehaviour {
         gameObject.SetActive(false);
     }
 
+
+
     private void OnDisable()
     {
         CancelInvoke();
+    }
+
+    void Update()
+    {
+        //transform.Translate(Vector3.up * Time.deltaTime);
+        GetComponent<Rigidbody>().velocity = Vector3.forward * speed;
     }
 }
