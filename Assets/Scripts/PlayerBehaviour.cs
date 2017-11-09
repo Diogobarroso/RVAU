@@ -8,18 +8,21 @@ public class PlayerBehaviour : MonoBehaviour, ITrackableEventHandler {
     float rateOfFire;
     TrackableBehaviour myTrackableBehaviour;
     List<GameObject> bullets;
+    GameObject bullet;
+    int poolSize = 10;
+    bool bulletSide = true;//represents the side we will shoot the bullet from, true for right, false for left
 
 	void Start () {
+        bullets = new List<GameObject>();
 
-        myTrackableBehaviour = GetComponent<TrackableBehaviour>();
-        GameObject tmpBullet;
-        for(int i = 0; i < 50; i++)
+        for (int i = 0; i < poolSize; i++)
         {
-            bullets.Add(Instantiate(Resources.Load("Missile")) as GameObject);
-            bullets[i].transform.SetParent(transform);
-            bullets[i].SetActive(false);
+            GameObject obj = (GameObject)Instantiate(Resources.Load("Bullet"));
+            obj.SetActive(false);
+            bullets.Add(obj);
         }
-
+            myTrackableBehaviour = GetComponent<TrackableBehaviour>();
+            
         if (myTrackableBehaviour)
         {
             Debug.Log("tracked");
@@ -35,6 +38,14 @@ public class PlayerBehaviour : MonoBehaviour, ITrackableEventHandler {
     void Fire()
     {
         Debug.Log("FIRE");
+        for (int i = 0; i < bullets.Count; i++)
+            if (!bullets[i].activeInHierarchy)
+            {
+                bullets[i].transform.position = transform.position;
+                bullets[i].transform.localScale = new Vector3(0.0005f,0.0005f,0.0005f);
+                bullets[i].SetActive(true);
+                break;
+            }
     }
 
     public void OnTrackableStateChanged(TrackableBehaviour.Status previousStatus, TrackableBehaviour.Status newStatus)
