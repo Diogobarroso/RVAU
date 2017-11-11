@@ -15,9 +15,16 @@ public class PlayerBehaviour : MonoBehaviour, ITrackableEventHandler {
     int poolSize = 10;
     bool bulletSide = true;//represents the side we will shoot the bullet from, true for right, false for left
 
+
+    [SerializeField]
+    private GameObject shipNose;
+    
+    private Transform shipNoseTransform;
+
 	void Start () {
         hp.value = hp.maxValue;
         bullets = new List<GameObject>();
+        shipNoseTransform = shipNose.GetComponent<Transform>();
 
         for (int i = 0; i < poolSize; i++)
         {
@@ -51,10 +58,13 @@ public class PlayerBehaviour : MonoBehaviour, ITrackableEventHandler {
             if (!bullets[i].activeInHierarchy)
             {
                 bullets[i].transform.position = transform.position;
+                Vector3 direction = shipNoseTransform.position - transform.position;
+                direction = direction.normalized; 
                 bullets[i].transform.localScale = new Vector3(0.0005f,0.0005f,0.0005f);
                 //bullets[i].transform.SetParent(GameObject.Find("Empty").transform);
                 //bullets[i].transform.rotation = Quaternion.identity;
                 bullets[i].SetActive(true);
+                bullets[i].GetComponent<BulletBehaviour>().setDirection(direction);
                 break;
             }
     }
