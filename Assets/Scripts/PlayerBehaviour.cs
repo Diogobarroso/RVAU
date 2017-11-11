@@ -1,9 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using Vuforia;
 
 public class PlayerBehaviour : MonoBehaviour, ITrackableEventHandler {
+    GameObject shield;
+    public Slider hp;
     float bulletsPerSecond = 2;
     float rateOfFire;
     TrackableBehaviour myTrackableBehaviour;
@@ -13,6 +16,7 @@ public class PlayerBehaviour : MonoBehaviour, ITrackableEventHandler {
     bool bulletSide = true;//represents the side we will shoot the bullet from, true for right, false for left
 
 	void Start () {
+        hp.value = hp.maxValue;
         bullets = new List<GameObject>();
 
         for (int i = 0; i < poolSize; i++)
@@ -28,7 +32,13 @@ public class PlayerBehaviour : MonoBehaviour, ITrackableEventHandler {
             Debug.Log("tracked");
             myTrackableBehaviour.RegisterTrackableEventHandler(this);
         }
-        rateOfFire = 1.0f / bulletsPerSecond;   
+        rateOfFire = 1.0f / bulletsPerSecond;
+
+        foreach (Transform child in transform)
+            if (child.name.Contains("Shield"))
+                shield = child.gameObject;
+
+        shield.SetActive(false);
 	}
 	
 	void Update () {
@@ -62,7 +72,22 @@ public class PlayerBehaviour : MonoBehaviour, ITrackableEventHandler {
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.transform.parent.gameObject.name.Contains("Bullet"))
-            Destroy(this);
+        if (!shield.activeInHierarchy && hp.value - other.gameObject.GetComponent<BulletBehaviour>().dmg > 0)
+            hp.value -= other.gameObject.GetComponent<BulletBehaviour>().dmg;
+    }
+
+    public void addPowerUp(string power)
+    {
+        if (power.Contains("Shield"))
+        {
+            shield.SetActive(true);
+            StartCoroutine(DestroyShield());
+        }
+    }
+
+    IEnumerator DestroyShield()
+    {
+        yield return new WaitForSeconds(2);
+        shield.SetActive(false);
     }
 }

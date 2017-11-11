@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class BulletBehaviour : MonoBehaviour {
-    float speed = 0.5f;
+    float speed = 0.3f;
+    public float dmg = 10;
     private void OnEnable()
     {
         Invoke("Destroy", 2.0f);
@@ -13,8 +14,7 @@ public class BulletBehaviour : MonoBehaviour {
     {
         gameObject.SetActive(false);
     }
-
-
+    
 
     private void OnDisable()
     {
