@@ -5,6 +5,16 @@ using UnityEngine;
 public class BulletBehaviour : MonoBehaviour {
     float speed = 0.3f;
     public float dmg = 10;
+
+    private Vector3 moveDirection;
+
+    private Rigidbody myRigidBody;
+
+    private void Start()
+    {
+        myRigidBody = GetComponent<Rigidbody>();
+    }
+
     private void OnEnable()
     {
         Invoke("Destroy", 2.0f);
@@ -21,9 +31,15 @@ public class BulletBehaviour : MonoBehaviour {
         CancelInvoke();
     }
 
+
+    public void setDirection(Vector3 direction) {
+        moveDirection = direction;
+    }
+
     void Update()
     {
         //transform.Translate(Vector3.up * Time.deltaTime);
-        GetComponent<Rigidbody>().velocity = Vector3.forward * speed;
+        //GetComponent<Rigidbody>().velocity = Vector3.forward * speed;
+        myRigidBody.velocity = moveDirection * speed;
     }
 }
