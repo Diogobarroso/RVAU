@@ -15,12 +15,16 @@ public class PlayerBehaviour : MonoBehaviour, ITrackableEventHandler {
     int poolSize = 10;
     bool bulletSide = true;//represents the side we will shoot the bullet from, true for right, false for left
 
+    private bool cheating = false;
 
     [SerializeField]
     private GameObject shipNose;
 
     [SerializeField]
     private GameObject enemyShip;
+
+    [SerializeField]
+    private GameObject gameManager;
     
     private Transform shipNoseTransform;
 
@@ -80,9 +84,31 @@ public class PlayerBehaviour : MonoBehaviour, ITrackableEventHandler {
         if (newStatus == TrackableBehaviour.Status.DETECTED ||
             newStatus == TrackableBehaviour.Status.TRACKED ||
             newStatus == TrackableBehaviour.Status.EXTENDED_TRACKED)
+        {
+            if (cheating) {
+                StopCoroutine(PunishPlayer());
+                cheating = false;
+            }
             InvokeRepeating("Fire", 1.0f, rateOfFire);
-        else
+        }
+
+        else if ( newStatus == TrackableBehaviour.Status.NOT_FOUND ) {
+            if (gameManager.GetComponent<GameManager>().GetGameStart()) {
+                StartCoroutine(PunishPlayer());
+                cheating = true;
+            }
+        }
+        else { 
             CancelInvoke();
+        }
+            
+
+    }
+
+    IEnumerator PunishPlayer() {
+        yield return new WaitForSeconds(0.1f);
+        hp.value -= 1;
+
     }
 
     private void OnTriggerEnter(Collider other)
@@ -90,7 +116,13 @@ public class PlayerBehaviour : MonoBehaviour, ITrackableEventHandler {
         Debug.Log("I was hit by a " + other.gameObject.name);
         if (!shield.activeInHierarchy)
             if (hp.value - other.gameObject.GetComponent<BulletBehaviour>().dmg > 0)
+            {
                 hp.value -= other.gameObject.GetComponent<BulletBehaviour>().dmg;
+            }
+            else {
+                GameManager.GameOver(transform.name);
+            }
+                
     }
 
     public void addPowerUp(string power)
