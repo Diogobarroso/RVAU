@@ -59,6 +59,7 @@ public class PlayerBehaviour : MonoBehaviour, ITrackableEventHandler {
             {
                 bullets[i].transform.position = transform.position;
                 Vector3 direction = shipNoseTransform.position - transform.position;
+                direction.z = 0;
                 direction = direction.normalized; 
                 bullets[i].transform.localScale = new Vector3(0.0005f,0.0005f,0.0005f);
                 //bullets[i].transform.SetParent(GameObject.Find("Empty").transform);
