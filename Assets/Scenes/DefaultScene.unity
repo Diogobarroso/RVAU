@@ -4227,6 +4227,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hp: {fileID: 903642038}
   shipNose: {fileID: 266397083}
+  enemyShip: {fileID: 640031010}
 --- !u!65 &519182757
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4379,6 +4380,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hp: {fileID: 25774002}
   shipNose: {fileID: 1671297670}
+  enemyShip: {fileID: 519182749}
 --- !u!1 &709094780
 GameObject:
   m_ObjectHideFlags: 0
