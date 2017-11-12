@@ -18,6 +18,9 @@ public class PlayerBehaviour : MonoBehaviour, ITrackableEventHandler {
 
     [SerializeField]
     private GameObject shipNose;
+
+    [SerializeField]
+    private GameObject enemyShip;
     
     private Transform shipNoseTransform;
 
@@ -66,6 +69,7 @@ public class PlayerBehaviour : MonoBehaviour, ITrackableEventHandler {
                 //bullets[i].transform.rotation = Quaternion.identity;
                 bullets[i].SetActive(true);
                 bullets[i].GetComponent<BulletBehaviour>().setDirection(direction);
+                bullets[i].GetComponent<BulletBehaviour>().setTarget(enemyShip);
                 break;
             }
     }
