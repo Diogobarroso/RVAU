@@ -14,10 +14,14 @@ public class BulletBehaviour : MonoBehaviour {
 
     private Transform myTransform;
 
+    private Quaternion originalQuart;
+
     private void Start()
     {
         myRigidBody = GetComponent<Rigidbody>();
         myTransform = GetComponent<Transform>();
+
+        originalQuart = myTransform.rotation;
     }
 
     private void OnEnable()
@@ -39,6 +43,9 @@ public class BulletBehaviour : MonoBehaviour {
 
     public void setDirection(Vector3 direction) {
         moveDirection = direction;
+       
+        myTransform.rotation = Quaternion.LookRotation(direction);
+        myTransform.rotation *= originalQuart ;
     }
 
     public void setTarget(GameObject enemyShip) {

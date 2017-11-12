@@ -87,8 +87,10 @@ public class PlayerBehaviour : MonoBehaviour, ITrackableEventHandler {
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!shield.activeInHierarchy && hp.value - other.gameObject.GetComponent<BulletBehaviour>().dmg > 0)
-            hp.value -= other.gameObject.GetComponent<BulletBehaviour>().dmg;
+        Debug.Log("I was hit by a " + other.gameObject.name);
+        if (!shield.activeInHierarchy)
+            if (hp.value - other.gameObject.GetComponent<BulletBehaviour>().dmg > 0)
+                hp.value -= other.gameObject.GetComponent<BulletBehaviour>().dmg;
     }
 
     public void addPowerUp(string power)

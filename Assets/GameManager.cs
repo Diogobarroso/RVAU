@@ -37,7 +37,6 @@ public class GameManager : MonoBehaviour
                 RaycastHit hit;
                 if (Physics.Raycast(Camera.main.ScreenPointToRay(powerUps[i].transform.position), out hit,500.0f))
                 {
-                    Debug.Log("Raycast hit " + hit.collider.gameObject.name);
                     hit.collider.gameObject.GetComponent<PlayerBehaviour>().addPowerUp(powerUps[i].name);
                     powerUps[i].SetActive(false);
                 }
