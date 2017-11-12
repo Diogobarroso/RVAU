@@ -33,6 +33,6 @@ sysinfo.txt
 *.apk
 *.unitypackage
 *.meta
-*.mat
+
 *.psd
 *.fbx
