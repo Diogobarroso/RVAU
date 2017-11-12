@@ -59,4 +59,12 @@ public class BulletBehaviour : MonoBehaviour {
         myTransform.position = new Vector3(myTransform.position.x, myTransform.position.y, target.transform.position.z);
         myRigidBody.velocity = moveDirection * speed;
     }
+
+    public void setPlayer(bool player)
+    {
+        if (player)
+            Physics.IgnoreLayerCollision(8, 8, true);
+        else
+            Physics.IgnoreLayerCollision(9, 9, true);
+    }
 }

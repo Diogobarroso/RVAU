@@ -25,6 +25,9 @@ public class PlayerBehaviour : MonoBehaviour, ITrackableEventHandler {
 
     [SerializeField]
     private GameObject gameManager;
+
+    [SerializeField]
+    private bool player1;
     
     private Transform shipNoseTransform;
 
@@ -37,9 +40,12 @@ public class PlayerBehaviour : MonoBehaviour, ITrackableEventHandler {
         {
             GameObject obj = (GameObject)Instantiate(Resources.Load("Bullet"));
             obj.SetActive(false);
+            //obj.GetComponent<BulletBehaviour>().setPlayer(player1);
+            Physics.IgnoreCollision(obj.GetComponent<Collider>(), GetComponent<Collider>());
             bullets.Add(obj);
         }
-            myTrackableBehaviour = GetComponent<TrackableBehaviour>();
+
+        myTrackableBehaviour = GetComponent<TrackableBehaviour>();
             
         if (myTrackableBehaviour)
         {
@@ -92,12 +98,12 @@ public class PlayerBehaviour : MonoBehaviour, ITrackableEventHandler {
             InvokeRepeating("Fire", 1.0f, rateOfFire);
         }
 
-        else if ( newStatus == TrackableBehaviour.Status.NOT_FOUND ) {
+        /*else if ( newStatus == TrackableBehaviour.Status.NOT_FOUND ) {
             if (gameManager.GetComponent<GameManager>().GetGameStart()) {
                 StartCoroutine(PunishPlayer());
                 cheating = true;
             }
-        }
+        }*/
         else { 
             CancelInvoke();
         }
@@ -120,7 +126,7 @@ public class PlayerBehaviour : MonoBehaviour, ITrackableEventHandler {
                 hp.value -= other.gameObject.GetComponent<BulletBehaviour>().dmg;
             }
             else {
-                GameManager.GameOver(transform.name);
+                gameManager.GetComponent<GameManager>().GameOver(transform.name);
             }
                 
     }

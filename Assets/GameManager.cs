@@ -43,4 +43,17 @@ public class GameManager : MonoBehaviour
             }
     }
 
+    public void GameOver(string name)
+    {
+        Debug.Log("gameover");
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        foreach (GameObject player in players)
+            if (!player.name.Contains(name))
+            {
+                GameObject gameOver = Instantiate(Resources.Load("GameOver")) as GameObject;
+                gameOver.GetComponent<GUIText>().text = player.name + gameOver.GetComponent<GUIText>().text;
+                gameOver.transform.SetParent(transform);
+
+            }
+    }
 }
