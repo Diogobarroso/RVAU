@@ -1,13 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
     List<GameObject> powerUps;
     List<GameObject> activePowerUps;
     float probability = 0.02f; //Probability [0,1] with which a power up will spawn
-                               // Use this for initialization
+    bool over = false;
     void Start()
     {
         powerUps = new List<GameObject>();
@@ -16,6 +18,7 @@ public class GameManager : MonoBehaviour
         tmp.transform.SetParent(GameObject.Find("Canvas").transform, false);
         powerUps.Add(tmp);
 
+        GameObject.Find("ARCamera").GetComponent<CameraFlipper>().OnPreCull();
     }
 
     // Update is called once per frame
@@ -45,15 +48,28 @@ public class GameManager : MonoBehaviour
 
     public void GameOver(string name)
     {
-        Debug.Log("gameover");
-        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-        foreach (GameObject player in players)
-            if (!player.name.Contains(name))
-            {
-                GameObject gameOver = Instantiate(Resources.Load("GameOver")) as GameObject;
-                gameOver.GetComponent<GUIText>().text = player.name + gameOver.GetComponent<GUIText>().text;
-                gameOver.transform.SetParent(transform);
+        if (!over)
+        {
+            over = true;
+            GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+            foreach (GameObject player in players)
+                if (!player.name.Contains(name))
+                {
+                    GameObject gameOver = Instantiate(Resources.Load("GameOver")) as GameObject;
+                    gameOver.GetComponent<Text>().text = player.name + gameOver.GetComponent<Text>().text;
+                    gameOver.transform.SetParent(transform, false);
+                    gameOver.transform.position = new Vector3(512, 384);
+                    foreach (Button child in gameOver.GetComponentsInChildren<Button>())
+                        child.onClick.AddListener(() => Listener(child.name));
+                }
+        }
+    }
 
-            }
+    void Listener(string name)
+    {
+        if (name.Contains("Play Again"))
+            SceneManager.LoadScene(0);
+        else if (name.Contains("Exit"))
+            Application.Quit();
     }
 }

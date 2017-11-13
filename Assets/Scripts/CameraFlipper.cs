@@ -9,11 +9,11 @@ public class CameraFlipper : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-
+        isFlipped = false;
         
 	}
 
-    private void OnPreCull()
+    public void OnPreCull()
     {
         if (!isFlipped) {
             myCam = GetComponent<Camera>();

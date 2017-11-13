@@ -86,7 +86,6 @@ public class PlayerBehaviour : MonoBehaviour, ITrackableEventHandler {
 
     public void OnTrackableStateChanged(TrackableBehaviour.Status previousStatus, TrackableBehaviour.Status newStatus)
     {
-        Debug.Log("tracbalb");
         if (newStatus == TrackableBehaviour.Status.DETECTED ||
             newStatus == TrackableBehaviour.Status.TRACKED ||
             newStatus == TrackableBehaviour.Status.EXTENDED_TRACKED)
@@ -126,6 +125,7 @@ public class PlayerBehaviour : MonoBehaviour, ITrackableEventHandler {
                 hp.value -= other.gameObject.GetComponent<BulletBehaviour>().dmg;
             }
             else {
+                hp.value = 0;
                 gameManager.GetComponent<GameManager>().GameOver(transform.name);
             }
                 
