@@ -28,10 +28,10 @@ public class PlayerBehaviour : MonoBehaviour, ITrackableEventHandler {
 
     [SerializeField]
     private bool player1;
-    
+
     private Transform shipNoseTransform;
 
-	void Start () {
+    void Start() {
         hp.value = hp.maxValue;
         bullets = new List<GameObject>();
         shipNoseTransform = shipNose.GetComponent<Transform>();
@@ -40,13 +40,12 @@ public class PlayerBehaviour : MonoBehaviour, ITrackableEventHandler {
         {
             GameObject obj = (GameObject)Instantiate(Resources.Load("Bullet"));
             obj.SetActive(false);
-            //obj.GetComponent<BulletBehaviour>().setPlayer(player1);
             Physics.IgnoreCollision(obj.GetComponent<Collider>(), GetComponent<Collider>());
             bullets.Add(obj);
         }
 
         myTrackableBehaviour = GetComponent<TrackableBehaviour>();
-            
+
         if (myTrackableBehaviour)
         {
             Debug.Log("tracked");
@@ -59,10 +58,10 @@ public class PlayerBehaviour : MonoBehaviour, ITrackableEventHandler {
                 shield = child.gameObject;
 
         shield.SetActive(false);
-	}
-	
-	void Update () {
-	}
+    }
+
+    void Update() {
+    }
 
     void Fire()
     {
@@ -73,10 +72,8 @@ public class PlayerBehaviour : MonoBehaviour, ITrackableEventHandler {
                 bullets[i].transform.position = transform.position;
                 Vector3 direction = shipNoseTransform.position - transform.position;
                 direction.z = 0;
-                direction = direction.normalized; 
-                bullets[i].transform.localScale = new Vector3(0.0005f,0.0005f,0.0005f);
-                //bullets[i].transform.SetParent(GameObject.Find("Empty").transform);
-                //bullets[i].transform.rotation = Quaternion.identity;
+                direction = direction.normalized;
+                bullets[i].transform.localScale = new Vector3(0.0005f, 0.0005f, 0.0005f);
                 bullets[i].SetActive(true);
                 bullets[i].GetComponent<BulletBehaviour>().setDirection(direction);
                 bullets[i].GetComponent<BulletBehaviour>().setTarget(enemyShip);
@@ -103,10 +100,10 @@ public class PlayerBehaviour : MonoBehaviour, ITrackableEventHandler {
                 cheating = true;
             }
         }*/
-        else { 
+        else {
             CancelInvoke();
         }
-            
+
 
     }
 
@@ -118,17 +115,22 @@ public class PlayerBehaviour : MonoBehaviour, ITrackableEventHandler {
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("I was hit by a " + other.gameObject.name);
-        if (!shield.activeInHierarchy)
+        if (!shield.activeInHierarchy && other.gameObject.name.Contains("Bullet"))
+        {
             if (hp.value - other.gameObject.GetComponent<BulletBehaviour>().dmg > 0)
             {
                 hp.value -= other.gameObject.GetComponent<BulletBehaviour>().dmg;
             }
-            else {
+            else
+            {
                 hp.value = 0;
                 gameManager.GetComponent<GameManager>().GameOver(transform.name);
+                CancelInvoke();
             }
-                
+        }
+
+        if(other.gameObject.name.Contains("Bullet"))
+            other.gameObject.SetActive(false);
     }
 
     public void addPowerUp(string power)
@@ -144,5 +146,20 @@ public class PlayerBehaviour : MonoBehaviour, ITrackableEventHandler {
     {
         yield return new WaitForSeconds(2);
         shield.SetActive(false);
+    }
+
+    public void Cancel()
+    {
+        CancelInvoke();
+    }
+
+    public void resetHP()
+    {
+        hp.value = hp.maxValue;
+    }
+
+    public void Invoke()
+    {
+        InvokeRepeating("Fire", 1.0f, rateOfFire);
     }
 }

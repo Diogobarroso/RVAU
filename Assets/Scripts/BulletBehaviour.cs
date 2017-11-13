@@ -26,7 +26,7 @@ public class BulletBehaviour : MonoBehaviour {
 
     private void OnEnable()
     {
-        Invoke("Destroy", 2.0f);
+        Invoke("Destroy", 3.0f);
     }
 
     private void Destroy()
