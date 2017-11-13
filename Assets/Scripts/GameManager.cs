@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
+using Vuforia;
+
 public class GameManager : MonoBehaviour
 {
     List<GameObject> powerUps;
@@ -11,11 +13,34 @@ public class GameManager : MonoBehaviour
     float probability = 0.02f; //Probability [0,1] with which a power up will spawn
     bool over = false;
     GameObject[] players;
-    bool gameActive = true;
+    bool gameActive = false;
+
+    private bool waitingToStart = true;
+
+    [SerializeField]
+    private GameObject p1;
+
+    [SerializeField]
+    private GameObject p2;
+
+    [SerializeField]
+    private GameObject title;
+
+    [SerializeField]
+    private GameObject instructions;
+
+    private PlayerBehaviour p1Script;
+
+    private PlayerBehaviour p2Script;
+
 
 
     void Start()
     {
+
+        p1Script = p1.GetComponent<PlayerBehaviour>();
+        p2Script = p2.GetComponent<PlayerBehaviour>();
+
         powerUps = new List<GameObject>();
         GameObject tmp = Instantiate(Resources.Load("Shield")) as GameObject;
         tmp.SetActive(false);
@@ -23,7 +48,7 @@ public class GameManager : MonoBehaviour
         powerUps.Add(tmp);
         players = GameObject.FindGameObjectsWithTag("Player");
 
-        GameObject.Find("ARCamera").GetComponent<CameraFlipper>().OnPreCull();
+        //GameObject.Find("ARCamera").GetComponent<CameraFlipper>().OnPreCull();
     }
 
     // Update is called once per frame
@@ -50,6 +75,21 @@ public class GameManager : MonoBehaviour
                         powerUps[i].SetActive(false);
                     }
                 }
+        }
+        else if(waitingToStart) {
+            TrackableBehaviour.Status p1Status = p1Script.getStatus();
+            TrackableBehaviour.Status p2Status = p2Script.getStatus();
+
+            if ((p1Status == TrackableBehaviour.Status.DETECTED ||
+            p1Status == TrackableBehaviour.Status.TRACKED ||
+            p1Status == TrackableBehaviour.Status.EXTENDED_TRACKED) && (p2Status == TrackableBehaviour.Status.DETECTED ||
+            p2Status == TrackableBehaviour.Status.TRACKED ||
+            p2Status == TrackableBehaviour.Status.EXTENDED_TRACKED)) {
+                waitingToStart = false;
+                gameActive = true;
+                title.SetActive(false);
+                instructions.SetActive(false);
+            }
         }
     }
 
@@ -88,6 +128,9 @@ public class GameManager : MonoBehaviour
                 Destroy(GameObject.Find("GameOver(Clone)"));
                 over = false;
             }
+            waitingToStart = true;
+            title.SetActive(true);
+            instructions.SetActive(true);
         }
         else if (name.Contains("Exit"))
             Application.Quit();

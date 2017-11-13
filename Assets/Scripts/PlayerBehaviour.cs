@@ -17,6 +17,8 @@ public class PlayerBehaviour : MonoBehaviour, ITrackableEventHandler {
 
     private bool cheating = false;
 
+    private TrackableBehaviour.Status currentStatus;
+
     [SerializeField]
     private GameObject shipNose;
 
@@ -63,6 +65,10 @@ public class PlayerBehaviour : MonoBehaviour, ITrackableEventHandler {
     void Update() {
     }
 
+    public TrackableBehaviour.Status getStatus() {
+        return currentStatus;
+    }
+
     void Fire()
     {
         Debug.Log("FIRE");
@@ -91,6 +97,7 @@ public class PlayerBehaviour : MonoBehaviour, ITrackableEventHandler {
                 StopCoroutine(PunishPlayer());
                 cheating = false;
             }
+            currentStatus = newStatus;
             InvokeRepeating("Fire", 1.0f, rateOfFire);
         }
 
